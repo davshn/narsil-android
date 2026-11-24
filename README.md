@@ -27,7 +27,7 @@ You need Android 10 or later, a JDK 17+ and the Android SDK (`ANDROID_HOME`), an
 Then:
 
 1. Open **Narsil** and sign in to claude.ai **with your email**, the one of your account even if you made it with Google: Google's and Apple's sign-ins refuse to run inside an app's WebView, so their buttons only say so.
-2. Long-press the app's icon and open **Ajustes** (or tap the band's notice in Claude's sidebar). Type the topic `/narsil movil` gives you and, if you made one, the key of `/narsil movil clave`. Tap **Guardar y recibir avisos** and allow notifications.
+2. Open the settings: tap Narsil in the band of Claude's sidebar (her picture and level, or the notice that asks for the topic), tap the "Narsil escucha tus avisos" notification, or long-press the app's icon and pick **Ajustes**, where the launcher shows shortcuts. Type the topic `/narsil movil` gives you and, if you made one, the key of `/narsil movil clave`. Tap **Guardar y recibir avisos** and allow notifications.
 3. Tap **Permitir en segundo plano**: without it, Android cuts the connection while the phone sleeps and alerts come late.
 
 Optional: to have claude.ai links from your email open in the app, go to Android's **Settings → Apps → Narsil → Open by default → Add link** and turn on `claude.ai`.

@@ -135,6 +135,7 @@ class MainActivity : ComponentActivity() {
                     feed.stop()
                 }
                 "port" -> if (m.optJSONObject("message")?.optString("type") == "settings") openSettings()
+                "settings" -> openSettings()
             }
         }
         val script = ExtensionScript.build { path -> assets.open(path).bufferedReader().use { it.readText() } }

@@ -29,6 +29,16 @@ host.addEventListener('message', (event) => {
   current?.deliver(message)
 })
 
+// The app has no browser menu to reach its settings from, as the extension has: a tap on Narsil in the band (her
+// picture and level) opens them, as a tap on its notice asking for the topic or the key does.
+document.addEventListener(
+  'click',
+  (event) => {
+    if (event.target instanceof Element && event.target.closest('#narsil-band .narsil-head')) send({ kind: 'settings' })
+  },
+  true,
+)
+
 function listeners() {
   const list = []
   return { list, addListener: (f) => list.push(f), removeListener: (f) => list.splice(list.indexOf(f) >>> 0, 1) }

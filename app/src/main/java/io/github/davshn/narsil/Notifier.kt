@@ -51,9 +51,16 @@ object Notifier {
         NotificationCompat.Builder(context, SERVICE)
             .setSmallIcon(R.drawable.ic_stat_narsil)
             .setContentTitle("Narsil escucha tus avisos")
-            .setContentText("Topic $topic")
+            .setContentText("Topic $topic · toca para cambiarlo")
             .setOngoing(true)
-            .setContentIntent(open(context, Links.CLAUDE_CODE, 0))
+            .setContentIntent(
+                PendingIntent.getActivity(
+                    context,
+                    0,
+                    Intent(context, SettingsActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+                ),
+            )
             .build()
 
     // Posting is checked: the person may have turned notifications off.
