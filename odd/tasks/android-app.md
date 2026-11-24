@@ -14,10 +14,10 @@ Branch: main (new repository). Delivery: ask-on-risk. Test runner: `./gradlew te
 
 ## Tasks
 
-- T1 S4,S5 inline: Gradle project and `Seal` port, tested against vectors from narsil-claude's seal.js.
-- T2 S1,S2,S3 inline: WebView host for the extension (shim, CSS, state feed from `<topic>-estado`).
-- T3 S1,S5 inline: foreground service following `<topic>`, notifications, boot start, settings screen.
-- T4 S3 inline: build, install on the phone, check login and alerts; README.
+- T1 S4,S5 inline: Gradle project and `Seal` port, tested against vectors from narsil-claude's seal.js. Done: 9051a31.
+- T2 S1,S2,S3 inline: WebView host for the extension (shim, CSS, state feed from `<topic>-estado`). Done: 3bcea35, 53c55c1, bfa379a.
+- T3 S1,S5 inline: foreground service following `<topic>`, notifications, boot start, settings screen. Done: 53c55c1.
+- T4 S3 inline: build, install on the phone, check login and alerts; README. Pending: sign-in by the person, real topic.
 
 ## Log
 
@@ -25,3 +25,4 @@ Branch: main (new repository). Delivery: ask-on-risk. Test runner: `./gradlew te
 - L2 (2026-11-24): "seria para reemplazar la pwa, la friccion que me dices para iniciar sesion seria igual solo una vez, no? ... (igual seria para mi uso personal)" / "hazlo en un proyecto nuevo y probemos a ver que tal, el repositorio seria publico, te dejo conectado el celular para que la instales"
 - L3 (2026-11-24): "no olvides ir haciendo commits al repositorio a medida que vas trabajando el repo se va a llamar narsil-android" / "recuerda que los estilos que va a inyectar seran los de la extension narsil-claude"
 - Decision: the alert stream is followed by a `specialUse` foreground service, since Android 15 caps `dataSync` at 6 h a day; no Firebase, no ntfy app needed.
+- Evidence (2026-11-24, Infinix X6730B, Android 15, WebView 157): through DevTools the page has narsilHostLoaded, a live narsilWatch, both style marks and the night ground rgb(15, 26, 44). With a throwaway topic, two done alerts of conv-a left one notification (tag done-conv-a, importance 3) and a priority 4 one its own (importance 4); accents arrive intact; a tap opened MainActivity on claude.ai/code. 24 JVM tests green.
