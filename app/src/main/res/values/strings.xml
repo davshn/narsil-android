@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Narsil</string>
+    <string name="settings_title">Ajustes de Narsil</string>
+    <string name="settings_shortcut">Ajustes</string>
+    <string name="settings_intro">Escribe el topic que te da /narsil movil y, si creaste una con /narsil movil clave, la clave. Se guardan solo en este teléfono.</string>
+    <string name="settings_topic">Topic</string>
+    <string name="settings_key">Clave (opcional)</string>
+    <string name="settings_save">Guardar y recibir avisos</string>
+    <string name="settings_saved">Guardado. Los avisos llegan a este teléfono; vuelve a Claude para ver la banda.</string>
+    <string name="settings_bad_topic">Ese topic no es válido: solo letras, números, - y _.</string>
+    <string name="settings_no_notifications">Sin permiso de notificaciones no verás los avisos.</string>
+    <string name="settings_battery_intro">Para que los avisos lleguen con el teléfono en reposo, deja que Narsil funcione en segundo plano.</string>
+    <string name="settings_battery">Permitir en segundo plano</string>
+    <string name="settings_battery_done">Ya funciona en segundo plano</string>
+</resources>
