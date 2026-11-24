@@ -8,7 +8,7 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-// As narsil-pwa's service worker shows what ntfy.sh pushes.
+// How Narsil's ntfy.sh alerts show as notifications.
 class AlertTest {
     private fun m() = JSONObject().put("id", "m1").put("title", "Narsil").put("message", "Terminó")
 

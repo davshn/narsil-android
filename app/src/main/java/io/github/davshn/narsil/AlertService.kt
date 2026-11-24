@@ -8,8 +8,8 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.ServiceCompat
 
-// Follows the alerts topic while the phone is on, in place of the PWA's web push: a foreground service of the
-// "specialUse" type, as Android 15 caps "dataSync" ones at six hours a day. It goes on from the last alert it showed,
+// Follows the alerts topic while the phone is on: a foreground service of the "specialUse" type, as Android 15 caps
+// "dataSync" ones at six hours a day. It goes on from the last alert it showed,
 // so one sent while the phone was off or the service was stopped comes once it is back, as ntfy.sh keeps them 12 h.
 class AlertService : Service() {
     private var stream: NtfyStream? = null

@@ -6,7 +6,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-// As narsil-claude's lib/state.js receive: what the band keeps of the states the mod sends to <topic>-estado.
+// As the band's lib/state.js receive: what the band keeps of the states the mod sends to <topic>-estado.
 class StateModelTest {
     private fun message(text: String) = JSONObject().put("event", "message").put("id", "x").put("message", text)
 

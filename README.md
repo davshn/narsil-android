@@ -11,7 +11,7 @@
 
 Narsil for Android is the phone app of the [Narsil](https://github.com/davshn/narsil-pet) family: it brings `claude.ai` and Narsil's alerts together in one app. Inside, Claude wears Narsil's colors and shows her band, with the state of your conversations, her level, and your usage limits. Outside, Narsil tells you with a notification when a conversation finishes, needs you, or fails, even with the app closed.
 
-It works on top of Claude's real web app, so you can approve permissions, answer questions, upload files, and read the whole conversation as always. It replaces narsil-pwa, whose alerts could not open Claude when tapped.
+It works on top of Claude's real web app, so you can approve permissions, answer questions, upload files, and read the whole conversation as always.
 
 It is an **open source** app, released under the [MIT](#license) license. It is not affiliated with Anthropic.
 
@@ -31,9 +31,7 @@ It is an **open source** app, released under the [MIT](#license) license. It is 
 ## Features
 
 ### Claude in Narsil's colors
-Claude wears the night-sea palette of [Narsil Skin](https://github.com/davshn/narsil-skin): backgrounds, text, borders, code blocks, and the purple glow while it works. It changes on its own with your phone's clock: light from 6:00 to 17:59 and dark from 18:00 to 5:59, whatever appearance you picked in Claude. The system bars follow it too.
-
-The colors and the band are those of Narsil en Claude, the extension for Firefox and Vivaldi: its scripts and styles run unchanged inside the app, from the very start of each page, so Claude's own colors never flash first.
+Claude wears the night-sea palette of [Narsil Skin](https://github.com/davshn/narsil-skin): backgrounds, text, borders, code blocks, and the purple glow while it works. It changes on its own with your phone's clock: light from 6:00 to 17:59 and dark from 18:00 to 5:59, whatever appearance you picked in Claude. The system bars follow it too. The colors go on from the very start of each page, so Claude's own never flash first.
 
 ### The band
 Above the box where you write, a strip shows the open conversation:
@@ -137,15 +135,13 @@ The app is one of several pieces. Each one installs on its own:
 | [Narsil](https://github.com/davshn/narsil-pet) | The Claude Code mod: a band above the prompt, voice, alerts, and the ntfy.sh messages this app shows. **The app needs it** for the alerts, Narsil's level, and her stage. |
 | [Narsil Check](https://github.com/davshn/narsil-check) | A side pane that checks the project you are working on. |
 | [Narsil Skin](https://github.com/davshn/narsil-skin) | Color themes and animated wallpapers for the Claude desktop app. |
-| Narsil en Claude | The extension for Firefox and Vivaldi on Android whose colors and band this app carries. |
 | [Narsil Watch](https://github.com/davshn/narsil-watch) | Narsil on a Wear OS watch. |
-| narsil-pwa | The web app this one replaces. |
 
 ## Security
 
 - The topic and the key are kept in the app's private storage, never in its code or in the page: the band gets only what they bring.
 - Without a key, anyone who knows your topic can read and publish on it. The app shows text from it only as text, and a picture only from Narsil's own drawings.
-- The extension's scripts and the channel to the app run only on `https://claude.ai`, in the page itself and not in its frames. Any other address opens in your browser.
+- The band's scripts and the channel to the app run only on `https://claude.ai`, in the page itself and not in its frames. Any other address opens in your browser.
 - The app pretends nothing: Claude, Google, and Cloudflare see it as the Android app it is.
 
 ## Development
@@ -157,11 +153,11 @@ Contributions are welcome: open an issue or a pull request on [GitHub](https://g
 ./gradlew installDebug
 ```
 
-The tests check the encryption against an alert sealed by the extension's own code, the alert rules, the state the band keeps, and the script that loads the extension. A debug build's page can be inspected from a computer at `chrome://inspect`; its console goes to logcat with the `NarsilWeb` tag.
+The tests check the encryption against an alert sealed the way the mod seals it, the alert rules, the state the band keeps, and the script that loads the band. A debug build's page can be inspected from a computer at `chrome://inspect`; its console goes to logcat with the `NarsilWeb` tag.
 
-- `app/src/main/assets/host.js`: what the extension's scripts ask of their browser, answered by the app.
-- `app/src/main/assets/extension/`: the copy of the extension's scripts and styles. `tools/sync-extension.sh ../narsil-claude` takes a newer one, and `SOURCE` says which commit it came from.
-- `ExtensionScript.kt`: puts `host.js`, the styles, and the scripts together, in the extension's order.
+- `app/src/main/assets/page/`: what the app puts in Claude's page: Narsil's colors (`skin.css`), the light or dark mode by the hour (`mode.js`), and the band (`content.js`, `band.css`, and `lib/`).
+- `app/src/main/assets/host.js`: what the band's scripts ask of their browser, answered by the app.
+- `PageScript.kt`: puts `host.js`, the styles, and the scripts together, in their order.
 - `MainActivity.kt`: Claude in the WebView, the files and the microphone, and where each link goes.
 - `StateFeed.kt` and `StateModel.kt`: the band's state, from `<your topic>-estado`.
 - `AlertService.kt`, `NtfyStream.kt`, `Alert.kt`, and `Notifier.kt`: the alerts, from the topic to the notification.

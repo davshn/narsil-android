@@ -7,8 +7,8 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 import org.json.JSONObject
 
-// Opens what the mod sealed with /narsil movil clave (hooks/seal.ts in narsil-pet), as narsil-claude's lib/seal.js
-// does: "narsil1:" and then, in base64url, a 16-byte nonce, the ciphertext and a 32-byte tag. HMAC-SHA256 of the nonce
+// Opens what the mod sealed with /narsil movil clave (hooks/seal.ts in narsil-pet), byte for byte as it seals it:
+// "narsil1:" and then, in base64url, a 16-byte nonce, the ciphertext and a 32-byte tag. HMAC-SHA256 of the nonce
 // and a block counter is the keystream; HMAC-SHA256 over the nonce and the ciphertext the tag; both keys come from the
 // shared one, as HMAC of "enc" and "mac".
 object Seal {

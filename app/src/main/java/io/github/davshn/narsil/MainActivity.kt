@@ -37,9 +37,9 @@ import androidx.webkit.WebViewFeature
 import java.util.Calendar
 import org.json.JSONObject
 
-// claude.ai in a WebView, dressed by narsil-claude: its content scripts run here as they run in Vivaldi, at document
-// start, and the app answers what they ask of their browser (host.js). The extension's packaged files are served from
-// https://claude.ai/__narsil__/, where the page's own policy lets them load.
+// claude.ai in a WebView, in Narsil's colors and with her band: their scripts (assets/page) run at document start, and
+// the app answers what they ask of their browser (host.js). Their files are served from https://claude.ai/__narsil__/,
+// where the page's own policy lets them load.
 class MainActivity : ComponentActivity() {
     private lateinit var web: WebView
     private lateinit var settings: Settings
@@ -109,13 +109,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    // The extension's scripts and the channel they talk to the app through, on claude.ai only.
+    // The band's scripts and the channel they talk to the app through, on claude.ai only.
     private fun host() {
         val origins = setOf(ORIGIN)
         if (!WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER) ||
             !WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)
         ) {
-            Log.w(TAG, "This WebView cannot host the extension: update Android System WebView")
+            Log.w(TAG, "This WebView cannot run the band: update Android System WebView")
             return
         }
         WebViewCompat.addWebMessageListener(web, "narsilHost", origins) { _, message, origin, isMainFrame, proxy ->
@@ -138,7 +138,7 @@ class MainActivity : ComponentActivity() {
                 "settings" -> openSettings()
             }
         }
-        val script = ExtensionScript.build { path -> assets.open(path).bufferedReader().use { it.readText() } }
+        val script = PageScript.build { path -> assets.open(path).bufferedReader().use { it.readText() } }
         WebViewCompat.addDocumentStartJavaScript(web, script, origins)
     }
 
@@ -252,7 +252,7 @@ class MainActivity : ComponentActivity() {
         super.onDestroy()
     }
 
-    // Behind the system bars, the page's own ground, light by day and dark by night as narsil-claude's mode.js sets it.
+    // Behind the system bars, the page's own ground, light by day and dark by night as the band's mode.js sets it.
     private fun paintBars() {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         val isDay = hour in 6..17

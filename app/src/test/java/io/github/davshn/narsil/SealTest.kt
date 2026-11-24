@@ -7,7 +7,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
 
-// The vector was sealed by narsil-claude's lib/seal.js, the same code the mod's hooks/seal.ts mirrors.
+// The vector was sealed by a JavaScript port of the mod's hooks/seal.ts.
 class SealTest {
     private val key = "AwoRGB8mLTQ7QklQV15lbHN6gYiPlp2kq7K5wMfO1dw"
     private val inside = "{\"title\":\"Narsil te necesita\",\"message\":\"Una pregunta: ¿sigo con la migración? ✓ — texto largo para cruzar varios bloques de 32 bytes.\"}"

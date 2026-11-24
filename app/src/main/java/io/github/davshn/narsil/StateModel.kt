@@ -3,7 +3,7 @@ package io.github.davshn.narsil
 import org.json.JSONException
 import org.json.JSONObject
 
-// What the band keeps of the states the mod sends to <topic>-estado, as narsil-claude's lib/state.js receive does:
+// What the band keeps of the states the mod sends to <topic>-estado, as the band's lib/state.js receive does:
 // the newest state, opened first when sealed, or a mark that the key could not open it.
 object StateModel {
     fun empty(): JSONObject = JSONObject().put("state", JSONObject.NULL).put("isSealed", false)

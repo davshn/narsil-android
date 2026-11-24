@@ -1,11 +1,11 @@
-// What narsil-claude's content scripts ask of their browser, answered by the app. `narsilHost` is the WebView's
-// message channel to the app (WebViewCompat.addWebMessageListener, only on https://claude.ai): the app follows
-// ntfy.sh in place of the extension's background and posts what it brought here, and the topic and the key never
-// reach the page. The extension's styles go on as constructed style sheets, which the page's CSP does not govern.
-// The app wraps this file, the styles and the scripts in one function, run at document start in the top frame only.
+// What the band's scripts (assets/page) ask of the `browser` they were written for, answered by the app. `narsilHost`
+// is the WebView's message channel to the app (WebViewCompat.addWebMessageListener, only on https://claude.ai): the app
+// follows ntfy.sh and posts what it brought here, and the topic and the key never reach the page. The band's styles go
+// on as constructed style sheets, which the page's CSP does not govern. The app wraps this file, the styles and the
+// scripts in one function, run at document start in the top frame only (PageScript.kt).
 
 const host = self.narsilHost
-const ASSETS = 'https://claude.ai/__narsil__/extension/'
+const ASSETS = 'https://claude.ai/__narsil__/page/'
 const STYLE_FILES = ['skin.css', 'band.css']
 const sheet = new CSSStyleSheet()
 sheet.replaceSync(NARSIL_CSS)
@@ -29,8 +29,8 @@ host.addEventListener('message', (event) => {
   current?.deliver(message)
 })
 
-// The app has no browser menu to reach its settings from, as the extension has: a tap on Narsil in the band (her
-// picture and level) opens them, as a tap on its notice asking for the topic or the key does.
+// A tap on Narsil in the band (her picture and level) opens the app's settings, as a tap on its notice asking for the
+// topic or the key does.
 document.addEventListener(
   'click',
   (event) => {

@@ -7,7 +7,7 @@ import java.net.URL
 import java.net.URLEncoder
 import org.json.JSONObject
 
-// One of ntfy.sh's topics as its JSON stream, a message a line, on a thread of its own, as narsil-claude's
+// One of ntfy.sh's topics as its JSON stream, a message a line, on a thread of its own, as the band's
 // lib/stream.js follows it: when the stream ends it is followed again from the last message it brought; when it fails,
 // a little later each time, up to a minute. ntfy.sh sends a keepalive every 45 s, so a read that waits 90 s found a
 // dead connection. `since`: a message id or a duration such as "12h"; null for what comes from now on.

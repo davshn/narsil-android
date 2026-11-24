@@ -1,13 +1,13 @@
 package io.github.davshn.narsil
 
-// The one script the WebView runs at document start on claude.ai: host.js, which answers what narsil-claude's content
-// scripts ask of their browser, with the extension's styles, then its scripts in its manifest's order: the
-// document_start group at once and the document_idle group once the document is parsed. Each file runs in a function
-// of its own, so one that throws leaves the others running. `read` gives an asset's text.
-object ExtensionScript {
-    private val STYLES = listOf("extension/skin.css", "extension/band.css")
-    private val AT_START = listOf("extension/lib/watch.js", "extension/lib/mode.js", "extension/mode.js")
-    private val AT_IDLE = listOf("extension/lib/restore.js", "extension/lib/state.js", "extension/lib/live.js", "extension/content.js")
+// The one script the WebView runs at document start on claude.ai: host.js, which answers what the band's scripts ask of
+// their browser, with Narsil's styles, then the scripts in their order: Narsil's colors and the light or dark mode at
+// once, and the band once the document is parsed. Each file runs in a function of its own, so one that throws leaves
+// the others running. `read` gives an asset's text.
+object PageScript {
+    private val STYLES = listOf("page/skin.css", "page/band.css")
+    private val AT_START = listOf("page/lib/watch.js", "page/lib/mode.js", "page/mode.js")
+    private val AT_IDLE = listOf("page/lib/restore.js", "page/lib/state.js", "page/lib/live.js", "page/content.js")
 
     fun build(read: (String) -> String): String {
         val css = STYLES.joinToString("\n") { read(it) }

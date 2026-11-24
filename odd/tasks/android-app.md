@@ -1,6 +1,6 @@
 # Narsil for Android
 
-Objective: a native Android app that replaces narsil-pwa: claude.ai in a WebView dressed by the narsil-claude extension, plus Narsil's ntfy alerts as native notifications.
+Objective: a native Android app: claude.ai in a WebView with Narsil's colors and band, plus Narsil's ntfy alerts as native notifications.
 Branch: main (new repository). Delivery: ask-on-risk. Test runner: `./gradlew testDebugUnitTest` (JVM unit tests).
 
 ## Specs
@@ -28,3 +28,4 @@ Branch: main (new repository). Delivery: ask-on-risk. Test runner: `./gradlew te
 - Evidence (2026-11-24, Infinix X6730B, Android 15, WebView 157): through DevTools the page has narsilHostLoaded, a live narsilWatch, both style marks and the night ground rgb(15, 26, 44). With a throwaway topic, two done alerts of conv-a left one notification (tag done-conv-a, importance 3) and a priority 4 one its own (importance 4); accents arrive intact; a tap opened MainActivity on claude.ai/code. 24 JVM tests green.
 - Evidence (2026-11-24, signed in by the person): file upload works. With a state published to the throwaway topic's -estado, the sidebar band showed level, XP, ntfy's count and Narsil's art from raw.githubusercontent.com (the page's CSP lets it load), and the strip above the composer showed TRABAJANDO, context, cache and her pose. Nothing showed before only because the app still had the throwaway topic.
 - Evidence (2026-11-24 00:44, real topic and key): the mod's alert and state, sealed with the new key, opened in the app. The alert showed as an app notification on the urgent channel (importance 4); the band showed Narsil Nivel 28, 30/2800 XP, ntfy's count and her etapa4 art. Settings open from Narsil in the band and from the service's notification.
+- L4 (2026-11-24): "narsil-claude y narsil-pwa los voy a deprecar en favor de esta app entonces podriamos directamente borrar la info sobre ellos" — the band's scripts are the app's own now (assets/page, PageScript); the README and the comments no longer name those projects; quotes above stay verbatim.

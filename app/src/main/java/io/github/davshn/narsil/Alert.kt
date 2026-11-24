@@ -2,7 +2,7 @@ package io.github.davshn.narsil
 
 import org.json.JSONObject
 
-// What a notification shows of an ntfy.sh message, as narsil-pwa's service worker shows it: a question or an error
+// What a notification shows of an ntfy.sh message: a question or an error
 // (priority 4 and up) stays and buzzes its own way; a "done" takes the place of the last one of its conversation (its
 // `conv-` tag); ntfy's "view" actions as buttons, two at most; and a tap opens Claude Code in the app.
 data class Alert(
