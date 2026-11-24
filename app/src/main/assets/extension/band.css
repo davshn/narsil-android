@@ -1,0 +1,204 @@
+/* A stylesheet of the manifest's, not a <style> the script adds: claude.ai's
+   Content-Security-Policy may refuse the second, never the first. */
+#narsil-band,
+#narsil-event {
+  --narsil-state: #8a90a6;
+  --narsil-muted: #a7adc0;
+  --narsil-text: #eceef5;
+  --narsil-bg: #0f1a2c;
+  --narsil-card: #16243b;
+  --narsil-track: #2a2e3d;
+  --narsil-line: #3a3f52;
+  all: initial;
+  display: block;
+  flex: none;
+  margin: 4px 0;
+  color: var(--narsil-text);
+  font: 13px/1.35 system-ui, sans-serif;
+}
+
+html[data-mode="light"] #narsil-band,
+html[data-mode="light"] #narsil-event {
+  --narsil-muted: #4a6a80;
+  --narsil-text: #0f2f47;
+  --narsil-bg: #e0f3f8;
+  --narsil-card: #c9e7f1;
+  --narsil-track: #b7deed;
+  --narsil-line: #9cc5d6;
+}
+
+#narsil-band * {
+  box-sizing: border-box;
+}
+
+/* Against skin.css's bold on everything: their own weights, as !important. */
+#narsil-band,
+#narsil-band *,
+#narsil-event,
+#narsil-event * {
+  font-weight: 400 !important;
+}
+
+#narsil-band .narsil-meter b {
+  font-weight: 700 !important;
+}
+
+#narsil-band [hidden] {
+  display: none !important;
+}
+
+#narsil-band {
+  padding: 8px 10px;
+  border: 1px solid var(--narsil-line);
+  border-radius: 10px;
+  background: var(--narsil-bg);
+}
+
+#narsil-band .narsil-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+#narsil-band .narsil-pet {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+#narsil-band .narsil-level {
+  flex: 1;
+  min-width: 0;
+}
+
+#narsil-band .narsil-level-name {
+  font-weight: 600 !important;
+}
+
+#narsil-band .narsil-level .narsil-bar i {
+  background: var(--narsil-accent, #5aaeff);
+}
+
+#narsil-band .narsil-notice {
+  all: unset;
+  display: block;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#narsil-band .narsil-meters {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#narsil-band .narsil-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#narsil-band .narsil-meter-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+#narsil-band .narsil-note {
+  color: var(--narsil-muted);
+  font-size: 11px;
+}
+
+#narsil-band .narsil-bar {
+  overflow: hidden;
+  height: 5px;
+  margin-top: 2px;
+  border-radius: 3px;
+  background: var(--narsil-track);
+}
+
+#narsil-band .narsil-bar i {
+  display: block;
+  height: 100%;
+}
+
+#narsil-event {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  padding: 5px 8px;
+  border-left: 3px solid var(--narsil-state);
+  border-radius: 8px;
+  background: var(--narsil-card);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#narsil-event .narsil-event-pet {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+#narsil-event .narsil-event-body {
+  flex: 1;
+  min-width: 0;
+}
+
+#narsil-event .narsil-event-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+#narsil-event .narsil-event-stats {
+  display: flex;
+  flex: 1;
+  gap: 8px;
+  min-width: 0;
+}
+
+#narsil-event .narsil-chip {
+  flex: none;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--narsil-state);
+  color: #10121a;
+  font-size: 11px;
+  font-weight: 700 !important;
+}
+
+#narsil-event .narsil-note {
+  color: var(--narsil-muted);
+  font-size: 11px;
+}
+
+/* Two lines until a tap opens the rest, so it leaves the conversation its room. */
+#narsil-event .narsil-event-text {
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#narsil-event.narsil-open .narsil-event-text {
+  display: block;
+  overflow-y: auto;
+  max-height: 40dvh;
+}
+
+/* The mark the content scripts look for, to tell whether this stylesheet
+   reached the page (lib/restore.js). */
+:root {
+  --narsil-css-band: 1;
+}

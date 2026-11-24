@@ -1,0 +1,168 @@
+/* Narsil's colors and styles on claude.ai, from the night sea theme of
+   narsil-skin: only the page's own design variables and a few parts, none of
+   that theme's wallpaper, waves or stars. Set at document_start, so the
+   page's own colors never flash first. */
+
+/* Each .cds-root the app mounts declares these again for itself, so setting
+   them on html alone lasts only until it has mounted. */
+html[data-mode="dark"],
+html[data-mode="dark"] .cds-root:not([data-mode="light"]),
+html[data-mode="dark"] #static-composer,
+.cds-root[data-mode="dark"],
+.cds-dark-scope {
+  --cds-page-bg: #0f1a2c !important;
+  --cds-surface-0: #0b1422 !important;
+  --cds-surface-1: #0f1a2c !important;
+  --cds-surface-2: #16243b !important;
+  --cds-surface-3: #1a2a44 !important;
+  --cds-surface-panel: #16243b !important;
+  --cds-surface-popover: #22344f !important;
+  --cds-text-primary: #dce6fa !important;
+  --cds-text-secondary: color-mix(in srgb, #dce6fa 68%, transparent) !important;
+  --cds-text-stays-secondary: color-mix(in srgb, #dce6fa 68%, transparent) !important;
+  --cds-text-muted: color-mix(in srgb, #dce6fa 44%, transparent) !important;
+  --cds-text-accent: #5aaeff !important;
+  --cds-text-tint-blue: #5aaeff !important;
+  --cds-border: rgb(156 200 255 / 8%) !important;
+  --cds-border-line: rgb(156 200 255 / 16%) !important;
+  --cds-border-strong: rgb(156 200 255 / 26%) !important;
+  --cds-border-accent: color-mix(in srgb, #5aaeff 26%, transparent) !important;
+  --cds-bg-accent: color-mix(in srgb, #5aaeff 14%, transparent) !important;
+  --cds-bg-accent-layer: color-mix(in srgb, #5aaeff 7%, transparent) !important;
+  --cds-bg-accent-muted: color-mix(in srgb, #5aaeff 11%, transparent) !important;
+  --cds-bg-neutral-hover: rgb(156 200 255 / 9%) !important;
+  --bg-000: 217 46% 16% !important;
+  --bg-100: 217 49% 12% !important;
+  --bg-200: 217 52% 10% !important;
+  --bg-300: 217 52% 8% !important;
+  --bg-400: 217 52% 7% !important;
+  --bg-500: 217 52% 7% !important;
+  --text-000: 220 75% 92% !important;
+  --text-100: 220 75% 92% !important;
+  --text-200: 220 40% 80% !important;
+  --text-300: 220 30% 72% !important;
+  --text-400: 220 22% 62% !important;
+  --text-500: 220 22% 62% !important;
+  --accent-000: 209 100% 80% !important;
+  --accent-100: 209 100% 68% !important;
+  --accent-200: 209 100% 68% !important;
+  --accent-900: 209 70% 20% !important;
+}
+
+html[data-mode="light"],
+html[data-mode="light"] .cds-root:not([data-mode="dark"]),
+html[data-mode="light"] #static-composer,
+.cds-root[data-mode="light"] {
+  --cds-page-bg: #c9e7f1 !important;
+  --cds-surface-0: #b7deed !important;
+  --cds-surface-1: #c9e7f1 !important;
+  --cds-surface-2: #d6eef5 !important;
+  --cds-surface-3: #e0f3f8 !important;
+  --cds-surface-panel: #d6eef5 !important;
+  --cds-surface-popover: #eaf7fb !important;
+  --cds-text-primary: #0f2f47 !important;
+  --cds-text-secondary: color-mix(in srgb, #0f2f47 72%, transparent) !important;
+  --cds-text-stays-secondary: color-mix(in srgb, #0f2f47 72%, transparent) !important;
+  --cds-text-muted: color-mix(in srgb, #0f2f47 52%, transparent) !important;
+  --cds-text-accent: #1f83a8 !important;
+  --cds-text-tint-blue: #1f83a8 !important;
+  --cds-border: rgb(15 47 71 / 8%) !important;
+  --cds-border-line: rgb(15 47 71 / 16%) !important;
+  --cds-border-strong: rgb(15 47 71 / 26%) !important;
+  --cds-border-accent: color-mix(in srgb, #1f83a8 28%, transparent) !important;
+  --cds-bg-accent: color-mix(in srgb, #1f83a8 14%, transparent) !important;
+  --cds-bg-accent-layer: color-mix(in srgb, #1f83a8 7%, transparent) !important;
+  --cds-bg-accent-muted: color-mix(in srgb, #1f83a8 11%, transparent) !important;
+  --cds-bg-neutral-hover: rgb(15 47 71 / 7%) !important;
+  --bg-000: 195 62% 91% !important;
+  --bg-100: 195 59% 87% !important;
+  --bg-200: 195 55% 84% !important;
+  --bg-300: 195 52% 81% !important;
+  --bg-400: 195 50% 78% !important;
+  --bg-500: 195 50% 78% !important;
+  --text-000: 206 65% 17% !important;
+  --text-100: 206 65% 17% !important;
+  --text-200: 206 40% 28% !important;
+  --text-300: 206 30% 36% !important;
+  --text-400: 206 22% 44% !important;
+  --text-500: 206 22% 44% !important;
+  --accent-000: 196 69% 32% !important;
+  --accent-100: 196 69% 39% !important;
+  --accent-200: 196 69% 39% !important;
+  --accent-900: 196 60% 85% !important;
+}
+
+/* What the page does not take from those variables. */
+.dframe-root:not([data-collapsed]) .dframe-sidebar,
+.dframe-chrome-peek-band {
+  background-color: var(--cds-surface-0) !important;
+}
+
+.dframe-root[data-collapsed] .dframe-sidebar-body {
+  --df-web-sidebar-bg: var(--cds-surface-0) !important;
+}
+
+/* Code blocks live in a shadow root: a rule on its host beats its own, and
+   variables pass inside. */
+diffs-container {
+  --diffs-light-bg: var(--cds-surface-2) !important;
+  --diffs-dark-bg: var(--cds-surface-2) !important;
+  --diffs-light: var(--cds-text-primary) !important;
+  --diffs-dark: var(--cds-text-primary) !important;
+}
+
+/* Chat code blocks color their tokens inline with the page's dark palette
+   (base text rgb(234, 236, 240)) even when the light mode is forced, so in
+   light mode the pale tokens are turned into darker tones of the same hues. */
+html[data-mode="light"] pre.code-block__code[style*="color: rgb(234, 236, 240)"] {
+  filter: invert(1) hue-rotate(180deg) saturate(1.3);
+}
+
+/* Only where the page declares them, as they inherit: on every element they
+   would make each one carry its own copy and slow every style recalculation. */
+:root,
+.cds-root,
+.cds-dark-scope,
+#static-composer,
+[data-cds-theme],
+.dframe-sidebar,
+[data-sidebar-group-label],
+[data-sidebar-group-label] [data-group-badge],
+[data-sidebar-group-label] [data-group-mark],
+[data-cds="DataTable"] tr[data-dimmed] {
+  --muted-as-secondary: var(--cds-text-muted) !important;
+  --df-sidebar-muted: var(--cds-text-muted) !important;
+}
+
+::selection {
+  background: var(--cds-text-accent);
+  color: var(--cds-surface-0);
+}
+
+[data-cds="ChatComposer"] > .bg-surface-3 {
+  box-shadow: inset 0 0 0 1px var(--cds-border-strong) !important;
+}
+
+[data-cds="ChatComposer"] > .bg-surface-3:focus-within {
+  box-shadow: inset 0 0 0 1.5px var(--cds-text-accent) !important;
+}
+
+/* The orange spark while Claude works, turned purple. */
+[data-cds="Spark"],
+[data-cds="WorkingMark"] {
+  filter: hue-rotate(262deg) saturate(1.3);
+}
+
+/* All the text in bold, as the theme has it. Narsil's own parts keep their
+   weights in band.css: a plain rule here, not a :not() of descendants, which
+   would walk every element's ancestors on each recalculation. */
+body,
+body * {
+  font-weight: 700 !important;
+}
+
+/* The mark the content scripts look for, to tell whether this stylesheet
+   reached the page (lib/restore.js). */
+:root {
+  --narsil-css-skin: 1;
+}
