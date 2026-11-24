@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
@@ -65,6 +66,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         settings = Settings(this)
+        // A debug build's page can be inspected from a computer, at chrome://inspect.
+        if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) WebView.setWebContentsDebuggingEnabled(true)
         feed = StateFeed(settings) { text -> runOnUiThread { reply?.postMessage(text) } }
 
         web = WebView(this)
@@ -82,8 +85,8 @@ class MainActivity : ComponentActivity() {
             domStorageEnabled = true
             mediaPlaybackRequiresUserGesture = false
             setSupportMultipleWindows(false)
-            // As Chrome on Android: some sign-in and bot checks turn a WebView away by its "; wv".
-            userAgentString = userAgentString.replace("; wv", "")
+            // As Chrome on Android: some sign-in and bot checks turn a WebView away by its "; wv" and "Version/4.0".
+            userAgentString = userAgentString.replace("; wv", "").replace("Version/4.0 ", "")
         }
         CookieManager.getInstance().apply {
             setAcceptCookie(true)
