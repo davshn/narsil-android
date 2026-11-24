@@ -17,7 +17,7 @@ Branch: main (new repository). Delivery: ask-on-risk. Test runner: `./gradlew te
 - T1 S4,S5 inline: Gradle project and `Seal` port, tested against vectors from narsil-claude's seal.js. Done: 9051a31.
 - T2 S1,S2,S3 inline: WebView host for the extension (shim, CSS, state feed from `<topic>-estado`). Done: 3bcea35, 53c55c1, bfa379a.
 - T3 S1,S5 inline: foreground service following `<topic>`, notifications, boot start, settings screen. Done: 53c55c1.
-- T4 S3 inline: build, install on the phone, check login and alerts; README. Pending: sign-in by the person, real topic.
+- T4 S3 inline: build, install on the phone, check login and alerts; README. Done: verified end to end on the phone.
 
 ## Log
 
@@ -27,3 +27,4 @@ Branch: main (new repository). Delivery: ask-on-risk. Test runner: `./gradlew te
 - Decision: the alert stream is followed by a `specialUse` foreground service, since Android 15 caps `dataSync` at 6 h a day; no Firebase, no ntfy app needed.
 - Evidence (2026-11-24, Infinix X6730B, Android 15, WebView 157): through DevTools the page has narsilHostLoaded, a live narsilWatch, both style marks and the night ground rgb(15, 26, 44). With a throwaway topic, two done alerts of conv-a left one notification (tag done-conv-a, importance 3) and a priority 4 one its own (importance 4); accents arrive intact; a tap opened MainActivity on claude.ai/code. 24 JVM tests green.
 - Evidence (2026-11-24, signed in by the person): file upload works. With a state published to the throwaway topic's -estado, the sidebar band showed level, XP, ntfy's count and Narsil's art from raw.githubusercontent.com (the page's CSP lets it load), and the strip above the composer showed TRABAJANDO, context, cache and her pose. Nothing showed before only because the app still had the throwaway topic.
+- Evidence (2026-11-24 00:44, real topic and key): the mod's alert and state, sealed with the new key, opened in the app. The alert showed as an app notification on the urgent channel (importance 4); the band showed Narsil Nivel 28, 30/2800 XP, ntfy's count and her etapa4 art. Settings open from Narsil in the band and from the service's notification.
