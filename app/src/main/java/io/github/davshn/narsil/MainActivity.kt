@@ -21,6 +21,7 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
@@ -84,9 +85,9 @@ class MainActivity : ComponentActivity() {
             javaScriptEnabled = true
             domStorageEnabled = true
             mediaPlaybackRequiresUserGesture = false
-            setSupportMultipleWindows(false)
-            // As Chrome on Android: some sign-in and bot checks turn a WebView away by its "; wv" and "Version/4.0".
-            userAgentString = userAgentString.replace("; wv", "").replace("Version/4.0 ", "")
+            // A page's popups (Google's sign-in button opens one) reach onCreateWindow, which decides where they go.
+            setSupportMultipleWindows(true)
+            javaScriptCanOpenWindowsAutomatically = true
         }
         CookieManager.getInstance().apply {
             setAcceptCookie(true)
@@ -149,17 +150,8 @@ class MainActivity : ComponentActivity() {
         override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
             files.shouldInterceptRequest(request.url)
 
-        // claude.ai stays in the app; any other address goes to the phone, Google's sign-in among them.
-        override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
-            val url = request.url.toString()
-            if (Links.isInApp(url)) return false
-            try {
-                startActivity(Intent(Intent.ACTION_VIEW, request.url).addCategory(Intent.CATEGORY_BROWSABLE))
-            } catch (_: ActivityNotFoundException) {
-                Log.w(TAG, "Nothing opens $url")
-            }
-            return true
-        }
+        override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean =
+            !Links.isInApp(request.url.toString()).also { inApp -> if (!inApp) goOut(request.url) }
 
         override fun onPageStarted(view: WebView, url: String?, favicon: android.graphics.Bitmap?) {
             reply = null
@@ -167,7 +159,38 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // Where an address the page leaves claude.ai for goes: Google's and Apple's sign-ins get a word on using an email,
+    // as they refuse to run here; anything else opens in the phone's browser.
+    private fun goOut(url: Uri) {
+        if (Links.isOutsideSignIn(url.toString())) {
+            Toast.makeText(this, R.string.sign_in_with_email, Toast.LENGTH_LONG).show()
+            return
+        }
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, url).addCategory(Intent.CATEGORY_BROWSABLE))
+        } catch (_: ActivityNotFoundException) {
+            Log.w(TAG, "Nothing opens $url")
+        }
+    }
+
     private inner class Chrome : WebChromeClient() {
+        // A popup never shows: a WebView of its own only hears the address it wants, which then goes where any link
+        // the page follows goes. The popup's opener sees it closed.
+        override fun onCreateWindow(view: WebView, isDialog: Boolean, isUserGesture: Boolean, resultMsg: android.os.Message): Boolean {
+            val popup = WebView(this@MainActivity)
+            popup.webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(popupView: WebView, request: WebResourceRequest): Boolean {
+                    val url = request.url
+                    if (Links.isInApp(url.toString())) web.loadUrl(url.toString()) else goOut(url)
+                    popupView.post(popupView::destroy)
+                    return true
+                }
+            }
+            (resultMsg.obj as WebView.WebViewTransport).webView = popup
+            resultMsg.sendToTarget()
+            return true
+        }
+
         override fun onConsoleMessage(message: ConsoleMessage): Boolean {
             Log.d(WEB_TAG, "${message.messageLevel()} ${message.message()} (${message.sourceId()}:${message.lineNumber()})")
             return true

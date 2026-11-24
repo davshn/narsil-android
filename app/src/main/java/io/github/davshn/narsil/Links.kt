@@ -17,4 +17,10 @@ object Links {
     fun isClaude(url: String?): Boolean = url != null && hostOf(url) == "claude.ai"
 
     fun isInApp(url: String?): Boolean = url != null && hostOf(url) in IN_APP
+
+    // Google's and Apple's sign-ins, which refuse to run inside an app's WebView: in the phone's browser they would
+    // sign the browser in, not the app, so the app says to sign in with an email instead.
+    private val OUTSIDE_SIGN_IN = setOf("accounts.google.com", "appleid.apple.com")
+
+    fun isOutsideSignIn(url: String?): Boolean = url != null && hostOf(url) in OUTSIDE_SIGN_IN
 }
