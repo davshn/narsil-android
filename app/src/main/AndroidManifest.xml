@@ -13,6 +13,8 @@
 
     <application
         android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -30,7 +32,7 @@
             </intent-filter>
             <!-- claude.ai links, the sign-in one among them: Android hands them to the app once it is allowed to
                  open them (Settings, the app, Open by default), as it cannot verify a domain that is not ours. -->
-            <intent-filter>
+            <intent-filter android:autoVerify="false">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

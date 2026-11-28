@@ -9,9 +9,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -87,9 +87,9 @@ object Notifier {
     // claude.ai opens in the app; any other address in the phone's browser.
     private fun open(context: Context, url: String, code: Int): PendingIntent {
         val intent = if (Links.isClaude(url)) {
-            Intent(Intent.ACTION_VIEW, Uri.parse(url), context, MainActivity::class.java)
+            Intent(Intent.ACTION_VIEW, url.toUri(), context, MainActivity::class.java)
         } else {
-            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            Intent(Intent.ACTION_VIEW, url.toUri())
         }.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         return PendingIntent.getActivity(context, code, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
     }

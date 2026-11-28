@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId = "io.github.davshn.narsil"
         minSdk = 29
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "0.1.0"
     }

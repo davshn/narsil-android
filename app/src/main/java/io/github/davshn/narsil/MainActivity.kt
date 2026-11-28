@@ -6,14 +6,15 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.PermissionRequest
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -27,9 +28,11 @@ import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
 import androidx.webkit.JavaScriptReplyProxy
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewCompat
@@ -50,6 +53,8 @@ class MainActivity : ComponentActivity() {
     private var reply: JavaScriptReplyProxy? = null
     private var chosen: ValueCallback<Array<Uri>>? = null
     private var microphone: PermissionRequest? = null
+    private var shown: String? = null
+    private var renderGoneAt = -RENDER_RETRY_MS
 
     private val pickFiles = registerForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { uris ->
         chosen?.onReceiveValue(uris.toTypedArray())
@@ -62,17 +67,19 @@ class MainActivity : ComponentActivity() {
     }
     private val askNotifications = registerForActivityResult(ActivityResultContracts.RequestPermission()) { }
 
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         settings = Settings(this)
         // A debug build's page can be inspected from a computer, at chrome://inspect.
         if (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) WebView.setWebContentsDebuggingEnabled(true)
-        feed = StateFeed(settings) { text -> runOnUiThread { reply?.postMessage(text) } }
+        feed = StateFeed(settings) { text ->
+            runOnUiThread {
+                if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) reply?.postMessage(text)
+            }
+        }
 
-        web = WebView(this)
-        frame = FrameLayout(this).apply { addView(web) }
+        frame = FrameLayout(this)
         setContentView(frame)
         // The page goes between the system bars and above the keyboard, which Android 15 draws over the app.
         ViewCompat.setOnApplyWindowInsetsListener(frame) { view, insets ->
@@ -80,22 +87,8 @@ class MainActivity : ComponentActivity() {
             view.setPadding(bars.left, bars.top, bars.right, bars.bottom)
             WindowInsetsCompat.CONSUMED
         }
-
-        with(web.settings) {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            mediaPlaybackRequiresUserGesture = false
-            // A page's popups (Google's sign-in button opens one) reach onCreateWindow, which decides where they go.
-            setSupportMultipleWindows(true)
-            javaScriptCanOpenWindowsAutomatically = true
-        }
-        CookieManager.getInstance().apply {
-            setAcceptCookie(true)
-            setAcceptThirdPartyCookies(web, true)
-        }
-        host()
-        web.webViewClient = Client()
-        web.webChromeClient = Chrome()
+        CookieManager.getInstance().setAcceptCookie(true)
+        web = newWeb()
 
         onBackPressedDispatcher.addCallback(this) {
             if (web.canGoBack()) web.goBack() else moveTaskToBack(true)
@@ -109,37 +102,57 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // The WebView Claude shows in, built again in the same place when its renderer is gone.
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun newWeb(): WebView = WebView(this).also { view ->
+        with(view.settings) {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            mediaPlaybackRequiresUserGesture = false
+            // A page's popups (Google's sign-in button opens one) reach onCreateWindow, which decides where they go.
+            setSupportMultipleWindows(true)
+            javaScriptCanOpenWindowsAutomatically = true
+        }
+        CookieManager.getInstance().setAcceptThirdPartyCookies(view, true)
+        host(view)
+        view.webViewClient = Client()
+        view.webChromeClient = Chrome()
+        frame.addView(view)
+    }
+
     // The band's scripts and the channel they talk to the app through, on claude.ai only.
-    private fun host() {
+    private fun host(view: WebView) {
         val origins = setOf(ORIGIN)
-        if (!WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER) ||
-            !WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)
-        ) {
-            Log.w(TAG, "This WebView cannot run the band: update Android System WebView")
-            return
-        }
-        WebViewCompat.addWebMessageListener(web, "narsilHost", origins) { _, message, origin, isMainFrame, proxy ->
-            if (!isMainFrame || origin.toString() != ORIGIN) return@addWebMessageListener
-            val m = try {
-                JSONObject(message.data ?: return@addWebMessageListener)
-            } catch (_: Exception) {
-                return@addWebMessageListener
-            }
-            when (m.optString("kind")) {
-                "connect" -> {
-                    reply = proxy
-                    feed.start()
-                }
-                "disconnect" -> if (reply === proxy) {
-                    reply = null
-                    feed.stop()
-                }
-                "port" -> if (m.optJSONObject("message")?.optString("type") == "settings") openSettings()
-                "settings" -> openSettings()
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)) {
+            if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
+                WebViewCompat.addWebMessageListener(view, "narsilHost", origins, hostListener)
+                val script = PageScript.build { path -> assets.open(path).bufferedReader().use { it.readText() } }
+                WebViewCompat.addDocumentStartJavaScript(view, script, origins)
+                return
             }
         }
-        val script = PageScript.build { path -> assets.open(path).bufferedReader().use { it.readText() } }
-        WebViewCompat.addDocumentStartJavaScript(web, script, origins)
+        Log.w(TAG, "This WebView cannot run the band: update Android System WebView")
+    }
+
+    private val hostListener = WebViewCompat.WebMessageListener { _, message, origin, isMainFrame, proxy ->
+        if (!isMainFrame || origin.toString() != ORIGIN) return@WebMessageListener
+        val m = try {
+            JSONObject(message.data ?: return@WebMessageListener)
+        } catch (_: Exception) {
+            return@WebMessageListener
+        }
+        when (m.optString("kind")) {
+            "connect" -> {
+                reply = proxy
+                feed.start()
+            }
+            "disconnect" -> if (reply === proxy) {
+                reply = null
+                feed.stop()
+            }
+            "port" -> if (m.optJSONObject("message")?.optString("type") == "settings") openSettings()
+            "settings" -> openSettings()
+        }
     }
 
     private inner class Client : WebViewClient() {
@@ -157,6 +170,30 @@ class MainActivity : ComponentActivity() {
         override fun onPageStarted(view: WebView, url: String?, favicon: android.graphics.Bitmap?) {
             reply = null
             feed.stop()
+        }
+
+        override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
+            if (url != null && Links.isClaude(url)) shown = url
+        }
+
+        // A renderer that crashed or that Android stopped for memory takes only the page with it: a new WebView loads
+        // where Claude was. If it is gone again right away, the app closes instead of reloading without end.
+        override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+            Log.w(TAG, "The page's renderer is gone (crashed: ${detail.didCrash()})")
+            reply = null
+            feed.stop()
+            frame.removeView(view)
+            val now = SystemClock.elapsedRealtime()
+            if (now - renderGoneAt < RENDER_RETRY_MS) {
+                finish()
+                return true
+            }
+            renderGoneAt = now
+            view.destroy()
+            web = newWeb()
+            if (!lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) web.onPause()
+            web.loadUrl(shown ?: Links.CLAUDE_CODE)
+            return true
         }
     }
 
@@ -184,6 +221,11 @@ class MainActivity : ComponentActivity() {
                     val url = request.url
                     if (Links.isInApp(url.toString())) web.loadUrl(url.toString()) else goOut(url)
                     popupView.post(popupView::destroy)
+                    return true
+                }
+
+                override fun onRenderProcessGone(popupView: WebView, detail: RenderProcessGoneDetail): Boolean {
+                    popupView.destroy()
                     return true
                 }
             }
@@ -256,7 +298,7 @@ class MainActivity : ComponentActivity() {
     private fun paintBars() {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         val isDay = hour in 6..17
-        frame.setBackgroundColor(Color.parseColor(if (isDay) "#c9e7f1" else "#0f1a2c"))
+        frame.setBackgroundColor((if (isDay) "#c9e7f1" else "#0f1a2c").toColorInt())
         WindowCompat.getInsetsController(window, frame).apply {
             isAppearanceLightStatusBars = isDay
             isAppearanceLightNavigationBars = isDay
@@ -275,6 +317,7 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         private const val ORIGIN = "https://claude.ai"
+        private const val RENDER_RETRY_MS = 10_000L
         private const val TAG = "Narsil"
         private const val WEB_TAG = "NarsilWeb"
     }
