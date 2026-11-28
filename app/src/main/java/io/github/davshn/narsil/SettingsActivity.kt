@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
@@ -15,6 +14,7 @@ import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 
 // The topic /narsil movil gives, and the key of /narsil movil clave when there is one: kept on the phone only.
 class SettingsActivity : ComponentActivity() {
@@ -62,7 +62,7 @@ class SettingsActivity : ComponentActivity() {
     // Without it, Android cuts the connection while the phone sleeps and alerts come late.
     @SuppressLint("BatteryLife")
     private fun askToRunInBackground() {
-        startActivity(Intent(AndroidSettings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:$packageName")))
+        startActivity(Intent(AndroidSettings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, "package:$packageName".toUri()))
     }
 
     private fun askForNotifications() {

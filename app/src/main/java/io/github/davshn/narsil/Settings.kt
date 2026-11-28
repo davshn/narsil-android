@@ -1,6 +1,7 @@
 package io.github.davshn.narsil
 
 import android.content.Context
+import androidx.core.content.edit
 import org.json.JSONObject
 
 // What the app keeps on the phone: the topic and the key typed in its settings (never in its code, as the repository
@@ -10,15 +11,15 @@ class Settings(context: Context) {
 
     var topic: String?
         get() = prefs.getString(TOPIC, null)?.takeIf { isTopic(it) }
-        set(value) = prefs.edit().putString(TOPIC, value).remove(LAST_ALERT).apply()
+        set(value) = prefs.edit { putString(TOPIC, value).remove(LAST_ALERT) }
 
     var key: String?
         get() = prefs.getString(KEY, null)?.takeIf { it.isNotBlank() }
-        set(value) = prefs.edit().putString(KEY, value).apply()
+        set(value) = prefs.edit { putString(KEY, value) }
 
     var lastAlertId: String?
         get() = prefs.getString(LAST_ALERT, null)
-        set(value) = prefs.edit().putString(LAST_ALERT, value).apply()
+        set(value) = prefs.edit { putString(LAST_ALERT, value) }
 
     fun model(topic: String): JSONObject? = try {
         prefs.getString(MODEL, null)?.let(::JSONObject)?.takeIf { it.optString("topic") == topic }?.optJSONObject("model")
@@ -27,7 +28,7 @@ class Settings(context: Context) {
     }
 
     fun saveModel(topic: String, model: JSONObject) {
-        prefs.edit().putString(MODEL, JSONObject().put("topic", topic).put("model", model).toString()).apply()
+        prefs.edit { putString(MODEL, JSONObject().put("topic", topic).put("model", model).toString()) }
     }
 
     companion object {
